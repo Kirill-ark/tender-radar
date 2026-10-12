@@ -7,33 +7,6 @@
   "nodes": [
     {
       "parameters": {
-        "chatId": "YOUR_TELEGRAM_CHAT_ID",
-        "text": "={{ $json.needs_review ? '⚠️ NEEDS HUMAN REVIEW: ' + $json.review_reasons.join(', ') + '\\n\\n' : '' }}<b>{{ $json.card.what.replaceAll('&', '&amp;').replaceAll('<', '&lt;') }}</b>\n\nLocation: {{ $json.card.location }}\nDeadline: {{ $json.card.deadline }}\nValue: {{ $json.card.estimated_value ?? 'not stated' }}\n\nRequirements:\n{{ $json.card.requirements.length ? $json.card.requirements.map(r => '• ' + r).join('\\n') : '• none stated' }}\n\nFit: {{ $json.card.fit_score }}/10, {{ $json.card.fit_reason }}\n\nSources: p. {{ $json.citations.map(c => c.page).join(', ') }}\nhttps://ted.europa.eu/de/notice/-/detail/{{ $json.tender_id }}",
-        "additionalFields": {
-          "appendAttribution": false,
-          "parse_mode": "HTML"
-        }
-      },
-      "type": "n8n-nodes-base.telegram",
-      "typeVersion": 1.2,
-      "position": [
-        1568,
-        0
-      ],
-      "id": "2106fb79-960f-4e99-b417-d5871b91ff22",
-      "name": "Send a text message",
-      "webhookId": "28a035c0-d3c7-4bc6-bf8b-65e2e1c45c95",
-      "retryOnFail": true,
-      "waitBetweenTries": 5000,
-      "credentials": {
-        "telegramApi": {
-          "id": "5LceMIng8sUxbeUf",
-          "name": "Telegram account"
-        }
-      }
-    },
-    {
-      "parameters": {
         "method": "POST",
         "url": "http://service:8000/ingest",
         "sendBody": true,
@@ -94,6 +67,33 @@
         912,
         0
       ]
+    },
+    {
+      "parameters": {
+        "chatId": "YOUR_TELEGRAM_CHAT_ID",
+        "text": "={{ $json.needs_review ? '⚠️ NEEDS HUMAN REVIEW: ' + $json.review_reasons.join(', ') + '\\n\\n' : '' }}<b>{{ $json.card.what.replaceAll('&', '&amp;').replaceAll('<', '&lt;') }}</b>\n\nLocation: {{ $json.card.location }}\nDeadline: {{ $json.card.deadline }}\nValue: {{ $json.card.estimated_value ?? 'not stated' }}\n\nRequirements:\n{{ $json.card.requirements.length ? $json.card.requirements.map(r => '• ' + r).join('\\n') : '• none stated' }}\n\nFit: {{ $json.card.fit_score }}/10, {{ $json.card.fit_reason }}\n\nSources: p. {{ $json.citations.map(c => c.page).join(', ') }}\nhttps://ted.europa.eu/de/notice/-/detail/{{ $json.tender_id }}",
+        "additionalFields": {
+          "appendAttribution": false,
+          "parse_mode": "HTML"
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1568,
+        0
+      ],
+      "id": "2106fb79-960f-4e99-b417-d5871b91ff22",
+      "name": "Send card",
+      "webhookId": "28a035c0-d3c7-4bc6-bf8b-65e2e1c45c95",
+      "retryOnFail": true,
+      "waitBetweenTries": 5000,
+      "credentials": {
+        "telegramApi": {
+          "id": "5LceMIng8sUxbeUf",
+          "name": "Telegram account"
+        }
+      }
     }
   ],
   "connections": {
@@ -112,7 +112,7 @@
       "main": [
         [
           {
-            "node": "Send a text message",
+            "node": "Send card",
             "type": "main",
             "index": 0
           }
@@ -142,12 +142,12 @@
   "staticData": null,
   "meta": null,
   "nodeGroups": [],
-  "versionCounter": 6,
+  "versionCounter": 7,
   "triggerCount": 0,
   "sourceWorkflowId": null,
   "tags": [],
   "versionMetadata": {
-    "name": "v3 retry",
+    "name": "v-names",
     "description": ""
   }
 }

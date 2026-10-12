@@ -128,7 +128,7 @@
         -96
       ],
       "id": "b6fb6da6-5056-4744-8d7f-4d944f7c27d1",
-      "name": "Send a text message",
+      "name": "Send answer",
       "webhookId": "a23e736c-e0c1-4c9f-b8fb-53b68722f6f6",
       "retryOnFail": true,
       "waitBetweenTries": 5000,
@@ -154,7 +154,7 @@
         96
       ],
       "id": "d931272e-450c-416f-b25b-80fed7bd4c14",
-      "name": "Send a text message1",
+      "name": "Send hint",
       "webhookId": "7ee8c65e-cc50-4554-9794-2baac27b8084",
       "retryOnFail": true,
       "waitBetweenTries": 5000,
@@ -200,7 +200,7 @@
         ],
         [
           {
-            "node": "Send a text message1",
+            "node": "Send hint",
             "type": "main",
             "index": 0
           }
@@ -211,7 +211,7 @@
       "main": [
         [
           {
-            "node": "Send a text message",
+            "node": "Send answer",
             "type": "main",
             "index": 0
           }
@@ -232,12 +232,12 @@
     "templateCredsSetupCompleted": true
   },
   "nodeGroups": [],
-  "versionCounter": 42,
+  "versionCounter": 44,
   "triggerCount": 1,
   "sourceWorkflowId": null,
   "tags": [],
   "versionMetadata": {
-    "name": "v3 retry",
+    "name": "v-names",
     "description": ""
   }
 }

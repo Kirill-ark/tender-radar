@@ -32,7 +32,7 @@
         0
       ],
       "id": "915ed4e5-f1a8-411e-85e9-34d4cf81a649",
-      "name": "Send a text message",
+      "name": "Send alert",
       "webhookId": "b7bf3461-92d6-45bb-85f6-1472787ff974",
       "retryOnFail": true,
       "waitBetweenTries": 5000,
@@ -49,7 +49,7 @@
       "main": [
         [
           {
-            "node": "Send a text message",
+            "node": "Send alert",
             "type": "main",
             "index": 0
           }
@@ -66,12 +66,12 @@
     "templateCredsSetupCompleted": true
   },
   "nodeGroups": [],
-  "versionCounter": 13,
+  "versionCounter": 14,
   "triggerCount": 0,
   "sourceWorkflowId": null,
   "tags": [],
   "versionMetadata": {
-    "name": "v2 retry",
+    "name": "v-names",
     "description": ""
   }
 }

@@ -18,26 +18,6 @@
     },
     {
       "parameters": {
-        "method": "POST",
-        "url": "https://api.ted.europa.eu/v3/notices/search",
-        "sendBody": true,
-        "specifyBody": "json",
-        "jsonBody": "={{ JSON.stringify({\n  query: \"classification-cpv IN (45000000) AND place-of-performance IN (DEU) AND notice-type IN (cn-standard) AND publication-date >= \" + $now.minus({days: 3}).toFormat('yyyyMMdd'),\n  fields: [\"publication-number\", \"title-proc\", \"buyer-name\", \"deadline-receipt-tender-date-lot\"],\n  limit: 5\n}) }}",
-        "options": {}
-      },
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 4.5,
-      "position": [
-        224,
-        0
-      ],
-      "id": "4301e21a-e668-4ec5-92d8-4cf573169fd1",
-      "name": "HTTP Request",
-      "retryOnFail": true,
-      "waitBetweenTries": 5000
-    },
-    {
-      "parameters": {
         "fieldToSplitOut": "notices",
         "options": {}
       },
@@ -145,6 +125,26 @@
       ],
       "id": "965e10e9-a39c-4d46-a9e7-fe3364b7203c",
       "name": "Call 'process-tender'"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.ted.europa.eu/v3/notices/search",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({\n  query: \"classification-cpv IN (45000000) AND place-of-performance IN (DEU) AND notice-type IN (cn-standard) AND publication-date >= \" + $now.minus({days: 3}).toFormat('yyyyMMdd'),\n  fields: [\"publication-number\", \"title-proc\", \"buyer-name\", \"deadline-receipt-tender-date-lot\"],\n  limit: 5\n}) }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        224,
+        0
+      ],
+      "id": "4301e21a-e668-4ec5-92d8-4cf573169fd1",
+      "name": "Search TED",
+      "retryOnFail": true,
+      "waitBetweenTries": 5000
     }
   ],
   "connections": {
@@ -152,18 +152,7 @@
       "main": [
         [
           {
-            "node": "HTTP Request",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "HTTP Request": {
-      "main": [
-        [
-          {
-            "node": "Split Out",
+            "node": "Search TED",
             "type": "main",
             "index": 0
           }
@@ -207,7 +196,18 @@
       "main": [
         [
           {
-            "node": "HTTP Request",
+            "node": "Search TED",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Search TED": {
+      "main": [
+        [
+          {
+            "node": "Split Out",
             "type": "main",
             "index": 0
           }
@@ -237,12 +237,12 @@
     "templateCredsSetupCompleted": true
   },
   "nodeGroups": [],
-  "versionCounter": 114,
+  "versionCounter": 115,
   "triggerCount": 1,
   "sourceWorkflowId": null,
   "tags": [],
   "versionMetadata": {
-    "name": "v3 sub-workflow",
+    "name": "v-names",
     "description": ""
   }
 }
