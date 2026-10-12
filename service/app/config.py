@@ -62,10 +62,14 @@ TRADE_POINTS = {"core": 7, "adjacent": 4, "none": 0}
 SIZE_POINTS = {"fits": 3, "unknown": 2, "too_large": 0, "too_small": 0}
 
 # --- Q&A ---
-ASK_TOP_K = 5
+# German notices, questions often in English: cross-language matches score lower, so
+# the right chunk can rank below 5th (eval: "works start" ranked 8th). 8 covers it.
+ASK_TOP_K = 8
 # Relevance floor (cosine similarity of the best chunk). Below it the answer is
-# "not found" without an LLM call. Calibrated on test questions, see README.
-ASK_MIN_SIMILARITY = 0.3
+# "not found" without an LLM call. It only filters off-topic questions (pizza: 0.09);
+# on-topic questions with no answer score higher than real answers (0.42 vs 0.30
+# in eval), so those are refused by the grounded prompt, the second layer.
+ASK_MIN_SIMILARITY = 0.2
 MAX_QUESTION_CHARS = 500
 
 # --- Metrics and token budget ---
@@ -73,5 +77,6 @@ MAX_QUESTION_CHARS = 500
 # computed from this file, and the daily budget is checked against it.
 METRICS_DB = os.getenv("METRICS_DB", "/data/metrics/metrics.sqlite")
 # Guardrail: once this many tokens were spent today (UTC), LLM calls are refused,
-# so a bug or a flood of tenders cannot burn the free tier.
-DAILY_TOKEN_BUDGET = int(os.getenv("DAILY_TOKEN_BUDGET", "200000"))
+# so a bug or a flood of tenders cannot burn the free tier. Kept below Groq's own
+# free-tier limit (200k tokens/day for gpt-oss-20b): at 200k Groq refused first.
+DAILY_TOKEN_BUDGET = int(os.getenv("DAILY_TOKEN_BUDGET", "150000"))

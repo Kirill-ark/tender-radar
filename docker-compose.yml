@@ -21,6 +21,7 @@ services:
     volumes:
       - chroma_data:/data/chroma
       - ./data/metrics:/data/metrics  # metrics.sqlite, readable from the host
+      - ./eval:/code/eval  # evaluation script and results, run inside the container
 
   tunnel:
     # Free Cloudflare quick tunnel: gives the local n8n a public HTTPS address,

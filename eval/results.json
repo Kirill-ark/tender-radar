@@ -1,0 +1,126 @@
+{
+  "summary": {
+    "answerable": 12,
+    "hit@1": 10,
+    "hit@3": 11,
+    "answers_correct": 7,
+    "not_in_document": 3,
+    "refused_correctly": 3
+  },
+  "rows": [
+    {
+      "question": "How many references to comparable works are required?",
+      "tender_id": "674261-2026",
+      "answer": "Three references are required [p. 4].",
+      "hit@1": true,
+      "hit@3": true,
+      "correct": true
+    },
+    {
+      "question": "What is the deadline for submitting offers?",
+      "tender_id": "674261-2026",
+      "answer": "The deadline for submitting offers is 02/11/2026 10:00:00 (UTC+01:00) [p. 5].",
+      "hit@1": true,
+      "hit@3": true,
+      "correct": true
+    },
+    {
+      "question": "How long must an offer remain valid?",
+      "tender_id": "674261-2026",
+      "answer": "The offer must remain valid for 36 days. [p. 5]",
+      "hit@1": false,
+      "hit@3": true,
+      "correct": true
+    },
+    {
+      "question": "When do the works start?",
+      "tender_id": "674261-2026",
+      "answer": "Not found in the document.",
+      "hit@1": false,
+      "hit@3": false,
+      "correct": false
+    },
+    {
+      "question": "Which lot is tendered here?",
+      "tender_id": "674272-2026",
+      "answer": "LOT-0001 [p. 2]",
+      "hit@1": true,
+      "hit@3": true,
+      "correct": false
+    },
+    {
+      "question": "When does the contract end?",
+      "tender_id": "674272-2026",
+      "answer": "The contract ends on 17 December 2027 [p. 2].",
+      "hit@1": true,
+      "hit@3": true,
+      "correct": true
+    },
+    {
+      "question": "Сколько дней предложение должно оставаться в силе?",
+      "tender_id": "674272-2026",
+      "answer": "Предложение должно оставаться в силе 30 дней [p. 3].",
+      "hit@1": true,
+      "hit@3": true,
+      "correct": true
+    },
+    {
+      "question": "What is the award criterion?",
+      "tender_id": "674299-2026",
+      "answer": "The award criterion is the lowest price [p. 3].",
+      "hit@1": true,
+      "hit@3": true,
+      "correct": true
+    },
+    {
+      "question": "Which review body handles complaints?",
+      "tender_id": "674299-2026",
+      "answer": "Not found in the document.",
+      "hit@1": true,
+      "hit@3": true,
+      "correct": false
+    },
+    {
+      "question": "How many windows have to be installed?",
+      "tender_id": "674304-2026",
+      "answer": "Not found in the document.",
+      "hit@1": true,
+      "hit@3": true,
+      "correct": false
+    },
+    {
+      "question": "What is the deadline for submitting offers?",
+      "tender_id": "674304-2026",
+      "answer": "The deadline for submitting offers is 20 October 2026 at 14:00:00 UTC+02:00 (Eastern European Time, Central European Summer Time). [p. 4]",
+      "hit@1": true,
+      "hit@3": true,
+      "correct": false
+    },
+    {
+      "question": "Wie viele Referenzen werden verlangt?",
+      "tender_id": "674304-2026",
+      "answer": "Drei Referenzen werden verlangt. [p. 3]",
+      "hit@1": true,
+      "hit@3": true,
+      "correct": true
+    },
+    {
+      "question": "Is a site visit mandatory?",
+      "tender_id": "674261-2026",
+      "answer": "Not found in the document.",
+      "correct": true
+    },
+    {
+      "question": "What is the recipe for pizza margherita?",
+      "tender_id": "674304-2026",
+      "answer": "Not found in the document.",
+      "correct": true
+    },
+    {
+      "question": "Who is the architect of the building?",
+      "tender_id": "674272-2026",
+      "answer": "Not found in the document.",
+      "correct": true
+    }
+  ]
+}

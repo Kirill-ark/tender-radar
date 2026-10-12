@@ -1,0 +1,17 @@
+[
+  {"tender_id": "674261-2026", "question": "How many references to comparable works are required?", "pages": [4], "answer": ["3", "three", "drei"]},
+  {"tender_id": "674261-2026", "question": "What is the deadline for submitting offers?", "pages": [5], "answer": ["02/11/2026", "2 November", "November 2", "2026-11-02", "02.11.2026"]},
+  {"tender_id": "674261-2026", "question": "How long must an offer remain valid?", "pages": [5], "answer": ["36"]},
+  {"tender_id": "674261-2026", "question": "When do the works start?", "pages": [3], "answer": ["14/12/2026", "14 December", "December 14", "2026-12-14", "14.12.2026"]},
+  {"tender_id": "674272-2026", "question": "Which lot is tendered here?", "pages": [1, 2], "answer": ["322", "LOT-0001"]},
+  {"tender_id": "674272-2026", "question": "When does the contract end?", "pages": [2], "answer": ["17/12/2027", "17 December", "December 17", "2027-12-17", "17.12.2027"]},
+  {"tender_id": "674272-2026", "question": "Сколько дней предложение должно оставаться в силе?", "pages": [3], "answer": ["30"]},
+  {"tender_id": "674299-2026", "question": "What is the award criterion?", "pages": [3], "answer": ["price", "Preis", "цена"]},
+  {"tender_id": "674299-2026", "question": "Which review body handles complaints?", "pages": [4, 5], "answer": ["Westfalen"]},
+  {"tender_id": "674304-2026", "question": "How many windows have to be installed?", "pages": [2], "answer": ["176"]},
+  {"tender_id": "674304-2026", "question": "What is the deadline for submitting offers?", "pages": [4], "answer": ["20/10/2026", "20 October", "October 20", "2026-10-20", "20.10.2026"]},
+  {"tender_id": "674304-2026", "question": "Wie viele Referenzen werden verlangt?", "pages": [3], "answer": ["drei", "3"]},
+  {"tender_id": "674261-2026", "question": "Is a site visit mandatory?", "not_in_document": true},
+  {"tender_id": "674304-2026", "question": "What is the recipe for pizza margherita?", "not_in_document": true},
+  {"tender_id": "674272-2026", "question": "Who is the architect of the building?", "not_in_document": true}
+]
