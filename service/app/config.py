@@ -34,15 +34,29 @@ GROQ_API_KEY = os.getenv("GROQ_API_KEY", "")
 # Groq retired its Llama chat models; gpt-oss-20b is fast and supports JSON mode.
 LLM_MODEL = os.getenv("LLM_MODEL", "openai/gpt-oss-20b")
 LLM_TIMEOUT_SECONDS = 30
-LLM_MAX_RETRIES = 2  # the SDK retries with exponential backoff on 429 / 5xx
+# The SDK retries with exponential backoff on 429 / 5xx. The free tier allows
+# 8000 tokens per minute and one card takes ~3000, so bursts do hit the limit.
+LLM_MAX_RETRIES = 5
 
 # --- Card ---
 # The card is built from the most relevant chunks, not the whole PDF: it keeps
 # each call small for the free tier's tokens-per-minute limit.
 CARD_CHUNKS_PER_QUERY = 4
 CARD_MAX_CHUNKS = 15
-COMPANY_PROFILE = (
-    "General building contractor based in Germany, about 50 employees. "
-    "Does building construction, renovation and interior finishing "
-    "(doors, windows, drywall, flooring). Typical project size 100k-5M EUR."
+
+# --- Fit score ---
+# The LLM only classifies the tender against this profile; the score itself is
+# computed in code from those classes, so the same tender always gets the same score
+# and every point can be explained.
+# The two lists must not overlap, or a borderline tender flips between them.
+CORE_TRADES = (
+    "interior renovation and finishing: interior doors, drywall, flooring, "
+    "screed, painting, plastering, tiling"
 )
+ADJACENT_TRADES = (
+    "building envelope and structure: windows, facades, roofing, carpentry and "
+    "timber construction, metal works, shell construction"
+)
+PROJECT_SIZE = "100k-5M EUR"
+TRADE_POINTS = {"core": 7, "adjacent": 4, "none": 0}
+SIZE_POINTS = {"fits": 3, "unknown": 2, "too_large": 0, "too_small": 0}

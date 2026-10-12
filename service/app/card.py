@@ -5,7 +5,15 @@ from typing import Literal
 
 from pydantic import BaseModel, Field, ValidationError
 
-from app.config import CARD_CHUNKS_PER_QUERY, CARD_MAX_CHUNKS, COMPANY_PROFILE
+from app.config import (
+    ADJACENT_TRADES,
+    CARD_CHUNKS_PER_QUERY,
+    CARD_MAX_CHUNKS,
+    CORE_TRADES,
+    PROJECT_SIZE,
+    SIZE_POINTS,
+    TRADE_POINTS,
+)
 from app.ingest import get_collection, get_embedder
 from app.llm import complete_json
 
@@ -34,13 +42,21 @@ Rules:
   certificates, register entries), not the scope of works. In English. If the
   excerpts state none, use an empty list; never list what is missing.
 - "sources" lists the excerpt numbers you used.
-- "fit_score" (0-10) rates how well the tender fits this company: {COMPANY_PROFILE}
+- "trade_match" classifies the works against the company's trades:
+  "core" if they are mainly {CORE_TRADES};
+  "adjacent" if they are mainly {ADJACENT_TRADES};
+  "none" otherwise (civil engineering, roads, electrical, HVAC, services, supplies).
+  Classify by the main trade of the contract; if it spans several, by the largest part.
+- "size_match" compares the contract value with the company's range of {PROJECT_SIZE}:
+  "fits", "too_large", "too_small", or "unknown" if no value is stated.
+- "fit_reason" explains both classifications in one sentence.
 - "confidence" is "low" if the excerpts were too thin or unclear to fill the card reliably.
 
 Reply with one JSON object with exactly these keys:
 {{"what": str, "location": str|null, "deadline": "YYYY-MM-DD"|null,
 "estimated_value": str|null, "requirements": [str, max 5],
-"fit_score": int, "fit_reason": str (one sentence),
+"trade_match": "core"|"adjacent"|"none",
+"size_match": "fits"|"too_large"|"too_small"|"unknown", "fit_reason": str,
 "confidence": "high"|"medium"|"low", "sources": [int]}}"""
 
 
@@ -50,7 +66,8 @@ class Card(BaseModel):
     deadline: str | None
     estimated_value: str | None
     requirements: list[str] = Field(max_length=5)
-    fit_score: int = Field(ge=0, le=10)
+    trade_match: Literal["core", "adjacent", "none"]
+    size_match: Literal["fits", "too_large", "too_small", "unknown"]
     fit_reason: str
     confidence: Literal["high", "medium", "low"]
     sources: list[int]
@@ -94,6 +111,11 @@ def build_prompt(chunks: list[dict]) -> str:
     return f"<document>\n{excerpts}\n</document>"
 
 
+def fit_score(card: Card) -> int:
+    """0-10, computed from the LLM's classes so it is repeatable and explainable."""
+    return TRADE_POINTS[card.trade_match] + SIZE_POINTS[card.size_match]
+
+
 def review_reasons(card: Card, chunk_count: int) -> list[str]:
     """Guardrail checks: why a card must not be sent as confident."""
     reasons = []
@@ -132,7 +154,7 @@ def generate_card(tender_id: str) -> dict:
     )
     return {
         "tender_id": tender_id,
-        "card": card.model_dump(),
+        "card": {**card.model_dump(), "fit_score": fit_score(card)},
         "citations": [{"file": chunks[0]["file"], "page": page} for page in cited],
         "needs_review": bool(reasons),
         "review_reasons": reasons,
