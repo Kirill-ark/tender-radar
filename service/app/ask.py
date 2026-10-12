@@ -94,7 +94,11 @@ def answer_question(tender_id: str, question: str) -> dict:
         n = int(match.group(1))
         return f"[p. {chunks[n - 1]['page']}]" if 1 <= n <= len(chunks) else ""
 
-    answer = re.sub(r"\[(\d+)\]", to_page, str(raw["answer"]))
+    answer = re.sub(r"\[(\d+)\]", to_page, str(raw["answer"])).strip()
+    # The model sometimes cites only in "sources" and leaves the text bare: the
+    # page reference is then appended in code, so every answer shows [p. N].
+    if "[p." not in answer:
+        answer += " [p. " + ", ".join(str(page) for page in pages) + "]"
     return {
         "tender_id": tender_id,
         "question": question,

@@ -7,6 +7,9 @@ services:
       - GENERIC_TIMEZONE=Europe/Berlin
       - TZ=Europe/Berlin
       - N8N_SECURE_COOKIE=false  # local only, lets Safari log in over http
+      # Public HTTPS address of the tunnel: Telegram sends updates to it.
+      # Set by scripts/start.sh, since a quick tunnel gets a new address each start.
+      - WEBHOOK_URL=${WEBHOOK_URL:-}
     volumes:
       - n8n_data:/home/node/.n8n
 
@@ -17,6 +20,14 @@ services:
       - "8000:8000"  # exposed for manual testing; n8n reaches it as http://service:8000
     volumes:
       - chroma_data:/data/chroma
+
+  tunnel:
+    # Free Cloudflare quick tunnel: gives the local n8n a public HTTPS address,
+    # so Telegram can deliver messages (webhooks) without hosting anything.
+    image: cloudflare/cloudflared
+    command: tunnel --no-autoupdate --url http://n8n:5678
+    depends_on:
+      - n8n
 
 volumes:
   n8n_data:
