@@ -8,13 +8,20 @@ import json
 
 from groq import APIError, Groq
 
-from app.config import GROQ_API_KEY, LLM_MAX_RETRIES, LLM_MODEL, LLM_TIMEOUT_SECONDS
+from app.config import (
+    DAILY_TOKEN_BUDGET,
+    GROQ_API_KEY,
+    LLM_MAX_RETRIES,
+    LLM_MODEL,
+    LLM_TIMEOUT_SECONDS,
+)
+from app.metrics import tokens_today
 
 _client = None
 
 
 class LLMUnavailable(RuntimeError):
-    """No API key configured, or the provider still failed after all retries."""
+    """No API key, the daily token budget is spent, or the provider still failed."""
 
 
 def _get_client() -> Groq:
@@ -35,6 +42,11 @@ def complete_json(system: str, user: str) -> tuple[dict | None, dict]:
 
     Returns (parsed object or None if the reply is not valid JSON, token usage).
     """
+    spent = tokens_today()
+    if spent >= DAILY_TOKEN_BUDGET:
+        raise LLMUnavailable(
+            f"daily token budget spent ({spent} of {DAILY_TOKEN_BUDGET} tokens)"
+        )
     try:
         response = _get_client().chat.completions.create(
             model=LLM_MODEL,

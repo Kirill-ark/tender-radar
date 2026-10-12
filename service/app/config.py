@@ -67,3 +67,11 @@ ASK_TOP_K = 5
 # "not found" without an LLM call. Calibrated on test questions, see README.
 ASK_MIN_SIMILARITY = 0.3
 MAX_QUESTION_CHARS = 500
+
+# --- Metrics and token budget ---
+# Every request and its LLM token usage is logged here; the README numbers are
+# computed from this file, and the daily budget is checked against it.
+METRICS_DB = os.getenv("METRICS_DB", "/data/metrics/metrics.sqlite")
+# Guardrail: once this many tokens were spent today (UTC), LLM calls are refused,
+# so a bug or a flood of tenders cannot burn the free tier.
+DAILY_TOKEN_BUDGET = int(os.getenv("DAILY_TOKEN_BUDGET", "200000"))
