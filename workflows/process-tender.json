@@ -1,0 +1,153 @@
+{
+  "id": "nwHxGxoGrKqP1MpX",
+  "name": "process-tender",
+  "description": null,
+  "active": true,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "chatId": "YOUR_TELEGRAM_CHAT_ID",
+        "text": "={{ $json.needs_review ? '⚠️ NEEDS HUMAN REVIEW: ' + $json.review_reasons.join(', ') + '\\n\\n' : '' }}<b>{{ $json.card.what.replaceAll('&', '&amp;').replaceAll('<', '&lt;') }}</b>\n\nLocation: {{ $json.card.location }}\nDeadline: {{ $json.card.deadline }}\nValue: {{ $json.card.estimated_value ?? 'not stated' }}\n\nRequirements:\n{{ $json.card.requirements.length ? $json.card.requirements.map(r => '• ' + r).join('\\n') : '• none stated' }}\n\nFit: {{ $json.card.fit_score }}/10, {{ $json.card.fit_reason }}\n\nSources: p. {{ $json.citations.map(c => c.page).join(', ') }}\nhttps://ted.europa.eu/de/notice/-/detail/{{ $json.tender_id }}",
+        "additionalFields": {
+          "appendAttribution": false,
+          "parse_mode": "HTML"
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1568,
+        0
+      ],
+      "id": "2106fb79-960f-4e99-b417-d5871b91ff22",
+      "name": "Send a text message",
+      "webhookId": "28a035c0-d3c7-4bc6-bf8b-65e2e1c45c95",
+      "retryOnFail": true,
+      "waitBetweenTries": 5000,
+      "credentials": {
+        "telegramApi": {
+          "id": "5LceMIng8sUxbeUf",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://service:8000/ingest",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"tender_id\": \"{{ $json['publication-number'] }}\",\n  \"pdf_url\": \"{{ $json.links.pdf.DEU }}\"\n}",
+        "options": {
+          "batching": {
+            "batch": {
+              "batchSize": 1,
+              "batchInterval": 3000
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        1120,
+        0
+      ],
+      "id": "fc55ffb2-2d38-4375-ad44-ad308e9bd5b1",
+      "name": "Ingest"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://service:8000/card",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={ \"tender_id\": \"{{ $json.tender_id }}\" }",
+        "options": {
+          "batching": {
+            "batch": {
+              "batchSize": 1,
+              "batchInterval": 10000
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        1344,
+        0
+      ],
+      "id": "d19ec940-c8e3-4e87-ad6e-55b756a8f15f",
+      "name": "Card"
+    },
+    {
+      "parameters": {
+        "inputSource": "passthrough"
+      },
+      "id": "61c77ede-9289-4512-b7ed-f0e2dfd792e8",
+      "typeVersion": 1.1,
+      "name": "Start",
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "position": [
+        912,
+        0
+      ]
+    }
+  ],
+  "connections": {
+    "Ingest": {
+      "main": [
+        [
+          {
+            "node": "Card",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Card": {
+      "main": [
+        [
+          {
+            "node": "Send a text message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Start": {
+      "main": [
+        [
+          {
+            "node": "Ingest",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "timeSavedMode": "fixed",
+    "errorWorkflow": "4PxHwCe7mQgNG0r7",
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false
+  },
+  "staticData": null,
+  "meta": null,
+  "nodeGroups": [],
+  "versionCounter": 6,
+  "triggerCount": 0,
+  "sourceWorkflowId": null,
+  "tags": [],
+  "versionMetadata": {
+    "name": "v3 retry",
+    "description": ""
+  }
+}
