@@ -10,5 +10,13 @@ services:
     volumes:
       - n8n_data:/home/node/.n8n
 
+  service:
+    build: ./service
+    ports:
+      - "8000:8000"  # exposed for manual testing; n8n reaches it as http://service:8000
+    volumes:
+      - chroma_data:/data/chroma
+
 volumes:
   n8n_data:
+  chroma_data:
