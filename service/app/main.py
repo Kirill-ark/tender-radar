@@ -4,7 +4,9 @@ import httpx
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel, Field, HttpUrl
 
+from app.ask import answer_question
 from app.card import TenderNotFound, generate_card
+from app.config import MAX_QUESTION_CHARS
 from app.ingest import DocumentRejected, ingest_tender
 from app.llm import LLMUnavailable
 
@@ -23,6 +25,11 @@ class IngestRequest(BaseModel):
 
 class CardRequest(BaseModel):
     tender_id: str = TENDER_ID
+
+
+class AskRequest(BaseModel):
+    tender_id: str = TENDER_ID
+    question: str = Field(min_length=3, max_length=MAX_QUESTION_CHARS)
 
 
 @app.get("/health")
@@ -47,5 +54,13 @@ def card(request: CardRequest) -> dict:
         return generate_card(request.tender_id)
     except TenderNotFound:
         raise HTTPException(status_code=404, detail="tender not ingested")
+    except LLMUnavailable as error:
+        raise HTTPException(status_code=503, detail=str(error))
+
+
+@app.post("/ask")
+def ask(request: AskRequest) -> dict:
+    try:
+        return answer_question(request.tender_id, request.question)
     except LLMUnavailable as error:
         raise HTTPException(status_code=503, detail=str(error))

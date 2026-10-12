@@ -60,3 +60,10 @@ ADJACENT_TRADES = (
 PROJECT_SIZE = "100k-5M EUR"
 TRADE_POINTS = {"core": 7, "adjacent": 4, "none": 0}
 SIZE_POINTS = {"fits": 3, "unknown": 2, "too_large": 0, "too_small": 0}
+
+# --- Q&A ---
+ASK_TOP_K = 5
+# Relevance floor (cosine similarity of the best chunk). Below it the answer is
+# "not found" without an LLM call. Calibrated on test questions, see README.
+ASK_MIN_SIMILARITY = 0.3
+MAX_QUESTION_CHARS = 500
