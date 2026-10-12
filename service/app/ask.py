@@ -14,16 +14,6 @@ from app.ingest import get_collection, get_embedder
 from app.llm import complete_json
 
 NOT_FOUND = "Not found in the document."
-NOT_FOUND_RU = "В документе этого нет."
-
-
-def not_found_text(question: str) -> str:
-    """The fixed "not found" reply, in Russian for a Cyrillic question.
-
-    This reply often comes from the relevance floor, before any LLM call, so no
-    model is there to match the question's language: a cheap script check is.
-    """
-    return NOT_FOUND_RU if re.search("[а-яА-ЯёЁ]", question) else NOT_FOUND
 
 SYSTEM_PROMPT = """You answer questions about ONE public construction tender notice.
 
@@ -63,7 +53,7 @@ def not_found(tender_id: str, question: str, reason: str, usage: dict | None = N
         "tender_id": tender_id,
         "question": question,
         "found": False,
-        "answer": not_found_text(question),
+        "answer": NOT_FOUND,
         "citations": [],
         "reason": reason,
         "usage": usage or {"prompt_tokens": 0, "completion_tokens": 0},
