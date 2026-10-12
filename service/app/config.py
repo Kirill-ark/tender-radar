@@ -27,3 +27,22 @@ CHUNK_OVERLAP = 50
 MAX_PDF_BYTES = 10 * 1024 * 1024  # 10 MB
 MAX_PDF_PAGES = 50
 DOWNLOAD_TIMEOUT_SECONDS = 30
+
+# --- LLM ---
+# Key comes from the environment only (.env locally, never committed).
+GROQ_API_KEY = os.getenv("GROQ_API_KEY", "")
+# Groq retired its Llama chat models; gpt-oss-20b is fast and supports JSON mode.
+LLM_MODEL = os.getenv("LLM_MODEL", "openai/gpt-oss-20b")
+LLM_TIMEOUT_SECONDS = 30
+LLM_MAX_RETRIES = 2  # the SDK retries with exponential backoff on 429 / 5xx
+
+# --- Card ---
+# The card is built from the most relevant chunks, not the whole PDF: it keeps
+# each call small for the free tier's tokens-per-minute limit.
+CARD_CHUNKS_PER_QUERY = 4
+CARD_MAX_CHUNKS = 15
+COMPANY_PROFILE = (
+    "General building contractor based in Germany, about 50 employees. "
+    "Does building construction, renovation and interior finishing "
+    "(doors, windows, drywall, flooring). Typical project size 100k-5M EUR."
+)

@@ -12,6 +12,7 @@ services:
 
   service:
     build: ./service
+    env_file: .env  # GROQ_API_KEY
     ports:
       - "8000:8000"  # exposed for manual testing; n8n reaches it as http://service:8000
     volumes:
