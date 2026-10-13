@@ -1,0 +1,127 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="680" viewBox="0 0 1200 680" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#5b6472"/>
+    </marker>
+  </defs>
+
+  <rect width="1200" height="680" fill="#ffffff"/>
+
+  <text x="40" y="44" font-size="22" font-weight="700" fill="#1f2328">Tender Radar — architecture</text>
+  <text x="40" y="68" font-size="13" fill="#5b6472">n8n orchestrates, the Python service does parsing, retrieval and LLM calls, Telegram is the interface</text>
+
+  <!-- External: TED -->
+  <rect x="40" y="130" width="160" height="70" rx="10" fill="#ffffff" stroke="#8c959f" stroke-dasharray="5 4"/>
+  <text x="120" y="160" font-size="14" font-weight="600" fill="#1f2328" text-anchor="middle">TED API</text>
+  <text x="120" y="180" font-size="11" fill="#5b6472" text-anchor="middle">EU public tenders</text>
+
+  <!-- External: Telegram -->
+  <rect x="40" y="420" width="160" height="90" rx="10" fill="#ffffff" stroke="#8c959f" stroke-dasharray="5 4"/>
+  <text x="120" y="452" font-size="14" font-weight="600" fill="#1f2328" text-anchor="middle">Telegram</text>
+  <text x="120" y="472" font-size="11" fill="#5b6472" text-anchor="middle">cards, questions,</text>
+  <text x="120" y="488" font-size="11" fill="#5b6472" text-anchor="middle">answers, alerts</text>
+
+  <!-- n8n container -->
+  <rect x="240" y="96" width="460" height="560" rx="14" fill="#f6f8fa" stroke="#d0d7de"/>
+  <text x="260" y="122" font-size="14" font-weight="700" fill="#1f2328">n8n</text>
+  <text x="296" y="122" font-size="12" fill="#5b6472">orchestration · Docker</text>
+
+  <rect x="260" y="138" width="420" height="104" rx="10" fill="#ffffff" stroke="#d0d7de"/>
+  <text x="276" y="162" font-size="14" font-weight="600" fill="#1f2328">fetch-tenders</text>
+  <text x="276" y="184" font-size="12" fill="#5b6472">Schedule 8:00 → Search TED (Germany, CPV 45000000,</text>
+  <text x="276" y="200" font-size="12" fill="#5b6472">last 3 days) → Split Out → Filter open deadlines</text>
+  <text x="276" y="216" font-size="12" fill="#5b6472">→ Remove Duplicates → call process-tender</text>
+  <text x="276" y="232" font-size="11" fill="#8c959f">retry on network errors</text>
+
+  <rect x="260" y="262" width="420" height="86" rx="10" fill="#ffffff" stroke="#d0d7de"/>
+  <text x="276" y="286" font-size="14" font-weight="600" fill="#1f2328">process-tender</text>
+  <text x="400" y="286" font-size="11" fill="#8c959f">sub-workflow, reusable</text>
+  <text x="276" y="308" font-size="12" fill="#5b6472">Ingest → Card → Send card</text>
+  <text x="276" y="326" font-size="11" fill="#8c959f">batched for the LLM rate limit, retry on failure</text>
+
+  <rect x="260" y="368" width="420" height="104" rx="10" fill="#ffffff" stroke="#d0d7de"/>
+  <text x="276" y="392" font-size="14" font-weight="600" fill="#1f2328">answer-question</text>
+  <text x="276" y="414" font-size="12" fill="#5b6472">Telegram reply to a card → tender id from the card</text>
+  <text x="276" y="430" font-size="12" fill="#5b6472">→ If replied to a card → Ask → Send answer</text>
+  <text x="276" y="446" font-size="12" fill="#5b6472">otherwise → Send hint</text>
+
+  <rect x="260" y="492" width="420" height="78" rx="10" fill="#ffffff" stroke="#d0d7de"/>
+  <text x="276" y="516" font-size="14" font-weight="600" fill="#1f2328">error-handler</text>
+  <text x="276" y="538" font-size="12" fill="#5b6472">Error Trigger (any workflow fails) → Send alert</text>
+  <text x="276" y="556" font-size="11" fill="#8c959f">workflow name, node, error, link to the execution</text>
+
+  <text x="260" y="604" font-size="11" fill="#5b6472">Public HTTPS for the Telegram webhook:</text>
+  <text x="260" y="620" font-size="11" fill="#5b6472">Cloudflare quick tunnel (container), set up by scripts/start.sh</text>
+
+  <!-- Service container -->
+  <rect x="760" y="96" width="414" height="430" rx="14" fill="#f6f8fa" stroke="#d0d7de"/>
+  <text x="780" y="122" font-size="14" font-weight="700" fill="#1f2328">Python service</text>
+  <text x="890" y="122" font-size="12" fill="#5b6472">FastAPI · Docker</text>
+
+  <rect x="780" y="140" width="160" height="44" rx="8" fill="#ffffff" stroke="#d0d7de"/>
+  <text x="792" y="160" font-size="13" font-weight="600" fill="#1f2328">POST /ingest</text>
+  <text x="792" y="176" font-size="11" fill="#5b6472">PDF → pages → chunks</text>
+
+  <rect x="780" y="196" width="160" height="44" rx="8" fill="#ffffff" stroke="#d0d7de"/>
+  <text x="792" y="216" font-size="13" font-weight="600" fill="#1f2328">POST /card</text>
+  <text x="792" y="232" font-size="11" fill="#5b6472">structured card + fit score</text>
+
+  <rect x="780" y="252" width="160" height="44" rx="8" fill="#ffffff" stroke="#d0d7de"/>
+  <text x="792" y="272" font-size="13" font-weight="600" fill="#1f2328">POST /ask</text>
+  <text x="792" y="288" font-size="11" fill="#5b6472">answer with page citations</text>
+
+  <rect x="780" y="308" width="160" height="44" rx="8" fill="#ffffff" stroke="#d0d7de"/>
+  <text x="792" y="328" font-size="13" font-weight="600" fill="#1f2328">GET /metrics</text>
+  <text x="792" y="344" font-size="11" fill="#5b6472">time, tokens, failures</text>
+
+  <rect x="964" y="140" width="192" height="56" rx="8" fill="#ddf4ff" stroke="#54aeff"/>
+  <text x="976" y="162" font-size="13" font-weight="600" fill="#1f2328">ChromaDB</text>
+  <text x="976" y="180" font-size="11" fill="#5b6472">chunks + tender_id, page</text>
+
+  <rect x="964" y="208" width="192" height="56" rx="8" fill="#ddf4ff" stroke="#54aeff"/>
+  <text x="976" y="230" font-size="13" font-weight="600" fill="#1f2328">Embeddings</text>
+  <text x="976" y="248" font-size="11" fill="#5b6472">multilingual MiniLM-L12, local</text>
+
+  <rect x="964" y="276" width="192" height="56" rx="8" fill="#ddf4ff" stroke="#54aeff"/>
+  <text x="976" y="298" font-size="13" font-weight="600" fill="#1f2328">SQLite</text>
+  <text x="976" y="316" font-size="11" fill="#5b6472">request log, daily token budget</text>
+
+  <rect x="780" y="372" width="376" height="136" rx="8" fill="#fff8c5" stroke="#d4a72c"/>
+  <text x="792" y="394" font-size="13" font-weight="600" fill="#1f2328">Guardrails</text>
+  <text x="792" y="414" font-size="11" fill="#5b6472">• PDF size, page and download-time limits</text>
+  <text x="792" y="430" font-size="11" fill="#5b6472">• document and question passed as tagged data (injection)</text>
+  <text x="792" y="446" font-size="11" fill="#5b6472">• relevance floor + grounded prompt: "not found", never a guess</text>
+  <text x="792" y="462" font-size="11" fill="#5b6472">• every answer cites a page; uncited answers are dropped</text>
+  <text x="792" y="478" font-size="11" fill="#5b6472">• card schema check → "needs human review" if unsure</text>
+  <text x="792" y="494" font-size="11" fill="#5b6472">• daily token budget, timeouts, rate-limit waits</text>
+
+  <!-- External: Groq -->
+  <rect x="860" y="580" width="200" height="70" rx="10" fill="#ffffff" stroke="#8c959f" stroke-dasharray="5 4"/>
+  <text x="960" y="610" font-size="14" font-weight="600" fill="#1f2328" text-anchor="middle">Groq LLM</text>
+  <text x="960" y="630" font-size="11" fill="#5b6472" text-anchor="middle">gpt-oss-20b, JSON mode</text>
+
+  <!-- Arrows -->
+  <g stroke="#5b6472" stroke-width="1.6" fill="none" marker-end="url(#arrow)">
+    <!-- fetch-tenders -> TED -->
+    <path d="M260,170 L204,166"/>
+    <!-- fetch-tenders -> process-tender -->
+    <path d="M470,242 L470,258"/>
+    <!-- process-tender -> /ingest and /card -->
+    <path d="M680,290 C730,290 730,162 776,162"/>
+    <path d="M680,305 C735,305 735,218 776,218"/>
+    <!-- answer-question -> /ask -->
+    <path d="M680,420 C740,420 740,274 776,274"/>
+    <!-- service -> Groq -->
+    <path d="M960,526 L960,576"/>
+    <!-- process-tender -> Telegram (cards) -->
+    <path d="M260,320 C225,320 220,420 170,416"/>
+    <!-- Telegram -> answer-question (questions) -->
+    <path d="M204,450 L256,420"/>
+    <!-- error-handler -> Telegram (alerts) -->
+    <path d="M260,530 C225,530 210,512 160,514"/>
+  </g>
+  <text x="212" y="152" font-size="10" fill="#5b6472">search</text>
+  <text x="206" y="372" font-size="10" fill="#5b6472">cards</text>
+  <text x="212" y="446" font-size="10" fill="#5b6472">reply</text>
+  <text x="208" y="540" font-size="10" fill="#5b6472">alerts</text>
+</svg>
