@@ -5,8 +5,9 @@ means rewriting this file only.
 """
 
 import json
+import time
 
-from groq import APIError, Groq
+from groq import APIError, Groq, RateLimitError
 
 from app.config import (
     DAILY_TOKEN_BUDGET,
@@ -16,6 +17,9 @@ from app.config import (
     LLM_TIMEOUT_SECONDS,
 )
 from app.metrics import tokens_today
+
+RATE_LIMIT_WAITS = 3
+MAX_RATE_LIMIT_WAIT_SECONDS = 60
 
 _client = None
 
@@ -37,6 +41,31 @@ def _get_client() -> Groq:
     return _client
 
 
+def _create_waiting_out_rate_limits(system: str, user: str):
+    """Call the model; on a per-minute rate limit wait as long as Groq asks, then retry.
+
+    The SDK's own retries back off for seconds only, but the free tier's limit is
+    per minute (8000 tokens): a burst of cards needs up to a minute to clear.
+    """
+    for attempt in range(RATE_LIMIT_WAITS + 1):
+        try:
+            return _get_client().chat.completions.create(
+                model=LLM_MODEL,
+                messages=[
+                    {"role": "system", "content": system},
+                    {"role": "user", "content": user},
+                ],
+                response_format={"type": "json_object"},
+                temperature=0.1,  # factual extraction, not creativity
+            )
+        except RateLimitError as error:
+            wait = float(error.response.headers.get("retry-after", 20))
+            # A wait beyond a minute means the daily limit, not the minute one: give up.
+            if attempt == RATE_LIMIT_WAITS or wait > MAX_RATE_LIMIT_WAIT_SECONDS:
+                raise
+            time.sleep(wait + 1)
+
+
 def complete_json(system: str, user: str) -> tuple[dict | None, dict]:
     """Ask the model for a JSON object.
 
@@ -48,15 +77,7 @@ def complete_json(system: str, user: str) -> tuple[dict | None, dict]:
             f"daily token budget spent ({spent} of {DAILY_TOKEN_BUDGET} tokens)"
         )
     try:
-        response = _get_client().chat.completions.create(
-            model=LLM_MODEL,
-            messages=[
-                {"role": "system", "content": system},
-                {"role": "user", "content": user},
-            ],
-            response_format={"type": "json_object"},
-            temperature=0.1,  # factual extraction, not creativity
-        )
+        response = _create_waiting_out_rate_limits(system, user)
     except APIError as error:
         # Rate limit or provider outage left after the SDK's retries: report it
         # as "unavailable" so the caller (n8n) can retry later, not crash with 500.
