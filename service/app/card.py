@@ -108,7 +108,13 @@ def build_prompt(chunks: list[dict]) -> str:
         f"[{number}] (page {chunk['page']})\n{chunk['text']}"
         for number, chunk in enumerate(chunks, start=1)
     )
-    return f"<document>\n{excerpts}\n</document>"
+    # Repeated after the document: with a long German excerpt last in the prompt the
+    # model tended to copy requirements verbatim instead of translating them.
+    return (
+        f"<document>\n{excerpts}\n</document>\n\n"
+        "Fill the card in English: translate every German phrase, including each "
+        "requirement, instead of copying it."
+    )
 
 
 def fit_score(card: Card) -> int:
