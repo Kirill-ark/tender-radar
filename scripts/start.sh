@@ -5,7 +5,10 @@
 set -euo pipefail
 cd "$(dirname "$0")/.."
 
-docker compose up -d --build service tunnel
+docker compose up -d --build service
+# Recreate the tunnel so its log holds only this run's address: a restarted
+# container keeps its old log, and the script would pick yesterday's dead URL.
+docker compose up -d --force-recreate tunnel
 
 echo "Waiting for the tunnel address..."
 url=""
