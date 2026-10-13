@@ -7,7 +7,7 @@ means rewriting this file only.
 import json
 import time
 
-from groq import APIError, Groq, RateLimitError
+from groq import APIError, BadRequestError, Groq, RateLimitError
 
 from app.config import (
     DAILY_TOKEN_BUDGET,
@@ -41,8 +41,10 @@ def _get_client() -> Groq:
     return _client
 
 
-def _create_waiting_out_rate_limits(system: str, user: str):
-    """Call the model; on a per-minute rate limit wait as long as Groq asks, then retry.
+def _create_with_retries(system: str, user: str):
+    """Call the model, retrying the two transient failures the free tier shows.
+
+    On a per-minute rate limit it waits as long as Groq asks, then retries.
 
     The SDK's own retries back off for seconds only, but the free tier's limit is
     per minute (8000 tokens): a burst of cards needs up to a minute to clear.
@@ -58,6 +60,11 @@ def _create_waiting_out_rate_limits(system: str, user: str):
                 response_format={"type": "json_object"},
                 temperature=0.1,  # factual extraction, not creativity
             )
+        except BadRequestError as error:
+            # In JSON mode Groq answers 400 "json_validate_failed" when the model's
+            # output was not valid JSON. That is random, not a bad request: retry.
+            if "json_validate_failed" not in str(error) or attempt == RATE_LIMIT_WAITS:
+                raise
         except RateLimitError as error:
             wait = float(error.response.headers.get("retry-after", 20))
             # A wait beyond a minute means the daily limit, not the minute one: give up.
@@ -77,7 +84,7 @@ def complete_json(system: str, user: str) -> tuple[dict | None, dict]:
             f"daily token budget spent ({spent} of {DAILY_TOKEN_BUDGET} tokens)"
         )
     try:
-        response = _create_waiting_out_rate_limits(system, user)
+        response = _create_with_retries(system, user)
     except APIError as error:
         # Rate limit or provider outage left after the SDK's retries: report it
         # as "unavailable" so the caller (n8n) can retry later, not crash with 500.
