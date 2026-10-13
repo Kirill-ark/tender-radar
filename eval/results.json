@@ -3,7 +3,7 @@
     "answerable": 12,
     "hit@1": 10,
     "hit@3": 11,
-    "answers_correct": 7,
+    "answers_correct": 11,
     "not_in_document": 3,
     "refused_correctly": 3
   },
@@ -19,7 +19,7 @@
     {
       "question": "What is the deadline for submitting offers?",
       "tender_id": "674261-2026",
-      "answer": "The deadline for submitting offers is 02/11/2026 10:00:00 (UTC+01:00) [p. 5].",
+      "answer": "The deadline for submitting offers is 02/11/2026 10:00:00 (UTC+01:00). [p. 5]",
       "hit@1": true,
       "hit@3": true,
       "correct": true
@@ -27,7 +27,7 @@
     {
       "question": "How long must an offer remain valid?",
       "tender_id": "674261-2026",
-      "answer": "The offer must remain valid for 36 days. [p. 5]",
+      "answer": "An offer must remain valid for 36 days. [p. 5]",
       "hit@1": false,
       "hit@3": true,
       "correct": true
@@ -35,23 +35,23 @@
     {
       "question": "When do the works start?",
       "tender_id": "674261-2026",
-      "answer": "Not found in the document.",
+      "answer": "The works start on 14 December 2026. [p. 3]",
       "hit@1": false,
       "hit@3": false,
-      "correct": false
+      "correct": true
     },
     {
       "question": "Which lot is tendered here?",
       "tender_id": "674272-2026",
-      "answer": "LOT-0001 [p. 2]",
+      "answer": "Los 322 [p. 2]",
       "hit@1": true,
       "hit@3": true,
-      "correct": false
+      "correct": true
     },
     {
       "question": "When does the contract end?",
       "tender_id": "674272-2026",
-      "answer": "The contract ends on 17 December 2027 [p. 2].",
+      "answer": "The contract ends on 17 December 2027. [p. 2]",
       "hit@1": true,
       "hit@3": true,
       "correct": true
@@ -67,7 +67,7 @@
     {
       "question": "What is the award criterion?",
       "tender_id": "674299-2026",
-      "answer": "The award criterion is the lowest price [p. 3].",
+      "answer": "The award criterion is the lowest price. [p. 3]",
       "hit@1": true,
       "hit@3": true,
       "correct": true
@@ -75,7 +75,7 @@
     {
       "question": "Which review body handles complaints?",
       "tender_id": "674299-2026",
-      "answer": "Not found in the document.",
+      "answer": "The contracting authority handles complaints [p. 4].",
       "hit@1": true,
       "hit@3": true,
       "correct": false
@@ -83,23 +83,23 @@
     {
       "question": "How many windows have to be installed?",
       "tender_id": "674304-2026",
-      "answer": "Not found in the document.",
+      "answer": "About 176 windows [p. 2].",
       "hit@1": true,
       "hit@3": true,
-      "correct": false
+      "correct": true
     },
     {
       "question": "What is the deadline for submitting offers?",
       "tender_id": "674304-2026",
-      "answer": "The deadline for submitting offers is 20 October 2026 at 14:00:00 UTC+02:00 (Eastern European Time, Central European Summer Time). [p. 4]",
+      "answer": "The deadline for submitting offers is 20/10/2026 14:00:00 (UTC+02:00) [p. 4].",
       "hit@1": true,
       "hit@3": true,
-      "correct": false
+      "correct": true
     },
     {
       "question": "Wie viele Referenzen werden verlangt?",
       "tender_id": "674304-2026",
-      "answer": "Drei Referenzen werden verlangt. [p. 3]",
+      "answer": "Drei Referenzen [p. 3].",
       "hit@1": true,
       "hit@3": true,
       "correct": true
